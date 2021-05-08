@@ -108,7 +108,7 @@ def buy(Percentage):
     POS += percent_cash
     cash = cash - percent_cash
 
-# function to take action based on the sub-contition  
+# function to take action based on the sub-condition  
 def action(Previous_sub_condition, Current_sub_condition):
 
     #AB
@@ -181,7 +181,7 @@ with open(output_filename, mode='w') as output_file:
                 previous_close = close
                 
                 # calculate short MA (price)
-                if line_count < ma_short_length: # Dont calculat ma until all the values are loaded
+                if line_count < ma_short_length: # Dont calculate ma until all the values are loaded
                     sma_list.insert(0, close)
                 elif line_count == ma_short_length:
                     sma_list.insert(0, close)
@@ -221,9 +221,9 @@ with open(output_filename, mode='w') as output_file:
                     buy_and_hold_OUT = 0
                     POS_OUT = 0     
                    
-                # Calculate the current sub-contition
+                # Calculate the current sub-condition
                 if line_count >= ma_long_length:
-                    current_sub_condition = sub_contition(sma_value_out,mma_value_out,lma_value_out)
+                    current_sub_condition = sub_condition(sma_value_out,mma_value_out,lma_value_out)
 
                 # Create action function 
                 action(previous_sub_condition, current_sub_condition)
