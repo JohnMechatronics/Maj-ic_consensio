@@ -144,7 +144,7 @@ def action(Previous_sub_condition, Current_sub_condition):
         
 # delta  
 def delta(BH_out,consensio):
-    delta = BH_out - consensio
+    delta = consensio - BH_out 
     return delta
 
 
