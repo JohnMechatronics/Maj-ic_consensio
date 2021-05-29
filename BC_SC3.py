@@ -141,6 +141,12 @@ def action(Previous_sub_condition, Current_sub_condition):
     #KB
     elif Current_sub_condition == 11  and Current_sub_condition > Previous_sub_condition and Current_sub_condition != Previous_sub_condition:
         buy(25)
+        
+# delta  
+def delta(BH_out,consensio):
+    delta = BH_out - consensio
+    return delta
+
 
 
 
@@ -150,7 +156,7 @@ import csv
 
 with open(output_filename, mode='w') as output_file:
     output_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    output_writer.writerow(['Date', 'Close', 'Change', 'Buy_and_Hold', 'SMA (price)', 'MMA', 'LMA', 'sub_condition', 'CASH', 'POS'])
+    output_writer.writerow(['Date', 'Close', 'Change', 'Buy_and_Hold', 'SMA (price)', 'MMA', 'LMA', 'sub_condition', 'CASH', 'POS', 'Consensio', 'Delta'])
     # Open input file
     with open(input_filename) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -169,7 +175,7 @@ with open(output_filename, mode='w') as output_file:
                 mma_list.append(close)
                 lma_list.append(close)
                 line_count += 1
-                output_writer.writerow([date, close, change, 0, 0,0,0, current_sub_condition, 0, 0])
+                output_writer.writerow([date, close, change, 0, 0,0,0, current_sub_condition, 0, 0,0,0])
                 print(date, close)
             # from row 2
             else:
@@ -219,7 +225,9 @@ with open(output_filename, mode='w') as output_file:
                     POS_OUT = POS
                 else:
                     buy_and_hold_OUT = 0
-                    POS_OUT = 0     
+                    POS_OUT = 0
+                    
+               
                    
                 # Calculate the current sub-contition
                 if line_count >= ma_long_length:
@@ -230,9 +238,16 @@ with open(output_filename, mode='w') as output_file:
                 POS_OUT = int(POS)
                 cash_out = int(cash)
                 
+                # Calculate Consensio (POS + Cash)
+                consensio_OUT = POS_OUT + cash_out
+                
+                 # Calculate delta
+                delta_OUT = delta(buy_and_hold_OUT, consensio_OUT) 
+                
+                
                 # print data to the ouput file
-                print(date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, lma_value_out, current_sub_condition, cash_out, POS_OUT)
-                output_writer.writerow([date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, lma_value_out, current_sub_condition, cash_out, POS_OUT])
+                print(date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, lma_value_out, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT)
+                output_writer.writerow([date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, lma_value_out, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT])
                 
                 # Move to the next line of the input file
                 previous_sub_condition = current_sub_condition
@@ -246,5 +261,6 @@ with open(output_filename, mode='w') as output_file:
     
         
         
+
 
 
