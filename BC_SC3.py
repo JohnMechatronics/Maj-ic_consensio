@@ -28,18 +28,23 @@ sma_list = []
 
 #vma_medium_length = 7
 mma_value_out = 0
-previous_mma = 0 #used to calculate slope
 mma_list = []
 
 ##ma_long_length = 30
 lma_value_out = 0
-previous_lma = 0 #used to calculate slope
 lma_list = []
+
+#used to calculate slope
+slope_weeks = 1 
+previous_mma = 0 
+mma_slope = 0
+previous_lma = 0 
+lma_slope = 0 
 
 current_sub_condition = 0
 previous_sub_condition = 1
 
-slope_weeks = 1 #number of weeks for slope calculation
+
 
 
 # ++++++++++++ functions ++++++++++++
@@ -211,8 +216,8 @@ with open(output_filename, mode='w') as output_file:
                     mma_value_out = calculate_moving_average(ma_medium_length, mma_list, close, True)
                 else:
                     mma_value_out = calculate_moving_average(ma_medium_length, mma_list, close, False)
-                # Calculate mma slope
-                mma_slope = slope(mma_value_out,previous_mma,slope_weeks)
+                    # Calculate mma slope
+                    mma_slope = slope(mma_value_out,previous_mma,slope_weeks)
              
                 # calculate long MA 
                 if line_count < ma_long_length:
@@ -221,10 +226,9 @@ with open(output_filename, mode='w') as output_file:
                     lma_list.insert(0, close)
                     lma_value_out = calculate_moving_average(ma_long_length, lma_list, close, True)
                 else:
-                    lma_value_out = calculate_moving_average(ma_long_length, lma_list, close, False)
-                    
-                # Calculate lma slope
-                lma_slope = slope(lma_value_out,previous_lma,slope_weeks)
+                    lma_value_out = calculate_moving_average(ma_long_length, lma_list, close, False)  
+                    # Calculate lma slope
+                    lma_slope = slope(lma_value_out,previous_lma,slope_weeks)
                    
                 # calculate Buy and Hold and POS - start at MA long
                 if line_count == ma_long_length: # enter trade
