@@ -18,9 +18,9 @@ cash = 0
 POS = buy_and_hold
 
 # Set the length of the 3 mmoving averages in weeks
-ma_short_length = int(input("Enter the short term MA in weeks: "),"3") #3
-ma_medium_length = int(input("Enter the medium term MA in weeks: "),"7") #7
-ma_long_length = int(input("Enter the long term MA in weeks: "),"30") #30
+ma_short_length = int(input("Enter the short term MA in weeks: ")) #3
+ma_medium_length = int(input("Enter the medium term MA in weeks: ")) #7
+ma_long_length = int(input("Enter the long term MA in weeks: ")) #30
 
 #ma_short_length = 3
 sma_value_out = 0
@@ -269,4 +269,3 @@ with open(output_filename, mode='w') as output_file:
             
             
         print(f'Processed {line_count} lines.')
-      
