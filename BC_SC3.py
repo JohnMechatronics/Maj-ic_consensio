@@ -44,9 +44,6 @@ lma_slope = 0
 current_sub_condition = 0
 previous_sub_condition = 1
 
-
-
-
 # ++++++++++++ functions ++++++++++++
 
 # function to calculate Moving averages         
@@ -162,7 +159,6 @@ def slope(y2,y1,weeks):
     m = (y2-y1)//(weeks)
     return m
 
-
 # ++++++++++++ Main Program ++++++++++++
 
 import csv
@@ -257,8 +253,7 @@ with open(output_filename, mode='w') as output_file:
                 consensio_OUT = POS_OUT + cash_out
                 
                 # Calculate delta
-                delta_OUT = delta(buy_and_hold_OUT, consensio_OUT) 
-                
+                delta_OUT = delta(buy_and_hold_OUT, consensio_OUT)      
                 
                 # print data to the ouput file
                 print(date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, mma_slope, lma_value_out, lma_slope, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT)
@@ -270,6 +265,5 @@ with open(output_filename, mode='w') as output_file:
                 previous_lma = lma_value_out
  
                 line_count += 1
-            
             
         print(f'Processed {line_count} lines.')
