@@ -18,24 +18,29 @@ cash = 0
 POS = buy_and_hold
 
 # Set the length of the 3 mmoving averages in weeks
-#ma_short_length = int(input("Enter the short term MA in weeks: "),"3") #3
-#ma_medium_length = int(input("Enter the medium term MA in weeks: "),"7") #7
-#ma_long_length = int(input("Enter the long term MA in weeks: "),"30") #30
+ma_short_length = int(input("Enter the short term MA in weeks: "),"3") #3
+ma_medium_length = int(input("Enter the medium term MA in weeks: "),"7") #7
+ma_long_length = int(input("Enter the long term MA in weeks: "),"30") #30
 
-ma_short_length = 3
+#ma_short_length = 3
 sma_value_out = 0
 sma_list = []
 
-ma_medium_length = 7
+#vma_medium_length = 7
 mma_value_out = 0
+previous_mma = 0 #used to calculate slope
 mma_list = []
 
-ma_long_length = 30
+##ma_long_length = 30
 lma_value_out = 0
+previous_lma = 0 #used to calculate slope
 lma_list = []
 
 current_sub_condition = 0
 previous_sub_condition = 1
+
+slope_weeks = 1 #number of weeks for slope calculation
+
 
 # ++++++++++++ functions ++++++++++++
 
@@ -147,7 +152,10 @@ def delta(BH_out,consensio):
     delta = consensio - BH_out 
     return delta
 
-
+# calculate slope 
+def slope(y2,y1,weeks):
+    m = (y2-y1)//(weeks)
+    return m
 
 
 # ++++++++++++ Main Program ++++++++++++
@@ -156,7 +164,7 @@ import csv
 
 with open(output_filename, mode='w') as output_file:
     output_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    output_writer.writerow(['Date', 'Close', 'Change', 'Buy_and_Hold', 'SMA (price)', 'MMA', 'LMA', 'sub_condition', 'CASH', 'POS', 'Consensio', 'Delta'])
+    output_writer.writerow(['Date', 'Close', 'Change', 'Buy_and_Hold', 'SMA (price)', 'MMA', 'MMA-Slope', 'LMA', 'LMA-Slope','sub_condition', 'CASH', 'POS', 'Consensio', 'Delta'])
     # Open input file
     with open(input_filename) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -175,7 +183,7 @@ with open(output_filename, mode='w') as output_file:
                 mma_list.append(close)
                 lma_list.append(close)
                 line_count += 1
-                output_writer.writerow([date, close, change, 0, 0,0,0, current_sub_condition, 0, 0,0,0])
+                output_writer.writerow([date, close, change, 0, 0,0,0,0,0, current_sub_condition, 0, 0,0,0])
                 print(date, close)
             # from row 2
             else:
@@ -203,6 +211,8 @@ with open(output_filename, mode='w') as output_file:
                     mma_value_out = calculate_moving_average(ma_medium_length, mma_list, close, True)
                 else:
                     mma_value_out = calculate_moving_average(ma_medium_length, mma_list, close, False)
+                # Calculate mma slope
+                mma_slope = slope(mma_value_out,previous_mma,slope_weeks)
              
                 # calculate long MA 
                 if line_count < ma_long_length:
@@ -212,6 +222,9 @@ with open(output_filename, mode='w') as output_file:
                     lma_value_out = calculate_moving_average(ma_long_length, lma_list, close, True)
                 else:
                     lma_value_out = calculate_moving_average(ma_long_length, lma_list, close, False)
+                    
+                # Calculate lma slope
+                lma_slope = slope(lma_value_out,previous_lma,slope_weeks)
                    
                 # calculate Buy and Hold and POS - start at MA long
                 if line_count == ma_long_length: # enter trade
@@ -226,14 +239,12 @@ with open(output_filename, mode='w') as output_file:
                 else:
                     buy_and_hold_OUT = 0
                     POS_OUT = 0
-                    
-               
                    
                 # Calculate the current sub-contition
                 if line_count >= ma_long_length:
                     current_sub_condition = sub_contition(sma_value_out,mma_value_out,lma_value_out)
 
-                # Create action function 
+                # Call action function 
                 action(previous_sub_condition, current_sub_condition)
                 POS_OUT = int(POS)
                 cash_out = int(cash)
@@ -241,26 +252,21 @@ with open(output_filename, mode='w') as output_file:
                 # Calculate Consensio (POS + Cash)
                 consensio_OUT = POS_OUT + cash_out
                 
-                 # Calculate delta
+                # Calculate delta
                 delta_OUT = delta(buy_and_hold_OUT, consensio_OUT) 
                 
                 
                 # print data to the ouput file
-                print(date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, lma_value_out, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT)
-                output_writer.writerow([date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, lma_value_out, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT])
+                print(date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, mma_slope, lma_value_out, lma_slope, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT)
+                output_writer.writerow([date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, mma_slope, lma_value_out, lma_slope, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT])
                 
                 # Move to the next line of the input file
                 previous_sub_condition = current_sub_condition
+                previous_mma = mma_value_out
+                previous_lma = lma_value_out
+ 
                 line_count += 1
             
             
         print(f'Processed {line_count} lines.')
-        
-
-
-    
-        
-        
-
-
-
+      
