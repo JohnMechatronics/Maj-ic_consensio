@@ -12,8 +12,8 @@ date = ""
 close = 0
 previous_close = 0
 change = 0.0
-#buy_and_hold = int(input("Enter the initial investment: "),"10000") # the default is $10000
-buy_and_hold = 10000 
+buy_and_hold = int(input("Enter the initial investment: ")) # the default is $10000
+#buy_and_hold = 10000 
 cash = 0
 POS = buy_and_hold
 
@@ -44,6 +44,9 @@ lma_slope = 0
 current_sub_condition = 0
 previous_sub_condition = 1
 
+
+
+
 # ++++++++++++ functions ++++++++++++
 
 # function to calculate Moving averages         
@@ -67,7 +70,7 @@ def recalculate_for_change(Change, val):
     return val
 
 # function to calculate the current sub-contition   
-def sub_contition(SMA,MMA,LMA):
+def sub_contidion(SMA,MMA,LMA):
     SC = 0
     if SMA > MMA and SMA > LMA and MMA > LMA:
         SC = 1 #"A"
@@ -159,6 +162,7 @@ def slope(y2,y1,weeks):
     m = (y2-y1)//(weeks)
     return m
 
+
 # ++++++++++++ Main Program ++++++++++++
 
 import csv
@@ -242,7 +246,7 @@ with open(output_filename, mode='w') as output_file:
                    
                 # Calculate the current sub-contition
                 if line_count >= ma_long_length:
-                    current_sub_condition = sub_contition(sma_value_out,mma_value_out,lma_value_out)
+                    current_sub_condition = sub_contidion(sma_value_out,mma_value_out,lma_value_out)
 
                 # Call action function 
                 action(previous_sub_condition, current_sub_condition)
@@ -253,7 +257,8 @@ with open(output_filename, mode='w') as output_file:
                 consensio_OUT = POS_OUT + cash_out
                 
                 # Calculate delta
-                delta_OUT = delta(buy_and_hold_OUT, consensio_OUT)      
+                delta_OUT = delta(buy_and_hold_OUT, consensio_OUT) 
+                
                 
                 # print data to the ouput file
                 print(date, close, change, buy_and_hold_OUT, sma_value_out, mma_value_out, mma_slope, lma_value_out, lma_slope, current_sub_condition, cash_out, POS_OUT, consensio_OUT, delta_OUT)
@@ -265,5 +270,6 @@ with open(output_filename, mode='w') as output_file:
                 previous_lma = lma_value_out
  
                 line_count += 1
+            
             
         print(f'Processed {line_count} lines.')
